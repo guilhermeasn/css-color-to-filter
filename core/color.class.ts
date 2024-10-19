@@ -3,6 +3,12 @@ export type ColorRgb = { r: number, g: number, b: number };
 export type ColorData = { rgb: ColorRgb, hex: ColorHex };
 export type ColorFilters = 'hueRotate' | 'grayscale' | 'sepia' | 'saturate' | 'brightness' | 'contrast' | 'invert'
 
+/**
+ * Class Color
+ * @see https://stackoverflow.com/questions/42966641/how-to-transform-black-into-any-given-color-using-only-css-filters/43960991#43960991
+ * @see https://www.w3.org/TR/filter-effects/#FilterPrimitivesOverview
+ * @author Guilherme Neves
+ */
 export default class Color {
 
     static hexShortPattern : RegExp = /^#([a-f\d])([a-f\d])([a-f\d])$/i;
