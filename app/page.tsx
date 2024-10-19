@@ -6,6 +6,8 @@ import Color from "@/core/color.class";
 const color = new Color('#3ad');
 color.transform('hueRotate', 180).transform('contrast', .5);
 
+// const css = new CSSFilter(color);
+
 export default function Home() {
 
     return <>
