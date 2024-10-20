@@ -1,7 +1,7 @@
 "use client";
 
 import Title from "@/components/Title";
-import CSSFilter from "@/core/cssfilter.class";
+import Color from "@/core/color.class";
 import { useEffect } from "react";
 
 // const css = new CSSFilter(color);
@@ -20,8 +20,9 @@ export default function Home() {
 
     useEffect(() => {
         console.clear();
-        const f = new CSSFilter('#135790');
-        f.run().finally(console.log);
+        const color = new Color('#00a4d6');
+        color.transform('sepia', 1).transform('brightness', .75);
+        console.log(color.input, color.output);
     }, []);
 
     return <>

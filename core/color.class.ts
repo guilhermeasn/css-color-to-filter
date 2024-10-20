@@ -1,7 +1,10 @@
+import keysMap from "object-as-array/keysMap";
+import toArray from "object-as-array/toArray";
 
 export type ColorHex = string;
 export type ColorRgb = { r: number, g: number, b: number };
-export type ColorData = { rgb: ColorRgb, hex: ColorHex };
+export type ColorHsl = { h: number, s: number, l: number };
+export type ColorData = { rgb: ColorRgb, hex: ColorHex, hsl: ColorHsl };
 export type ColorFilters = 'hueRotate' | 'grayscale' | 'sepia' | 'saturate' | 'brightness' | 'contrast' | 'invert'
 
 /**
@@ -35,7 +38,7 @@ export default class Color {
             num = num > 255 ? 255 : num;
             return Math.round(num);
         }
-        return { r: fix(rgb.r), g: fix(rgb.g), b: fix(rgb.b) };
+        return keysMap(rgb, v => fix(v));
     }
 
     static rgbToHex(rgb : ColorRgb) : ColorHex {
@@ -47,27 +50,44 @@ export default class Color {
         return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`.toUpperCase();
     }
 
+    static rgbToHsl(rgb : ColorRgb) : ColorHsl {
+        const avail : ColorRgb = keysMap(rgb, v => v / 255);
+        const max : number = Math.max(...toArray(avail, 'value'));
+        const min : number = Math.min(...toArray(avail, 'value'));
+        const hsl : ColorHsl = { h: 0, s: 0, l: (max + min) / 2 };
+        if(max !== min) {
+            const d = max - min;
+            hsl.s = hsl.l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            hsl.h = (max === avail.r) ? (avail.g - avail.b) / d + (avail.g < avail.b ? 6 : 0) :
+                    (max === avail.g) ? (avail.b - avail.r) / d + 2 :
+                    (max === avail.b) ? (avail.r - avail.g) / d + 4 : hsl.h;
+            hsl.h /= 6;
+        }
+        return keysMap(hsl, v => v * 100);
+    }
+    
     private readonly _input : Readonly<ColorRgb>;
     private _output : ColorRgb
 
     constructor(hexOrRgb: ColorHex | ColorRgb) {
-        this._input = typeof hexOrRgb === 'string'
+        this._output = this._input = typeof hexOrRgb === 'string'
             ? Color.hexToRgb(hexOrRgb)
             : Color.rgbFix(hexOrRgb);
-        this._output = this._input;
     }
 
     get input() : ColorData {
         return {
             rgb: this._input,
-            hex: Color.rgbToHex(this._input)
+            hex: Color.rgbToHex(this._input),
+            hsl: Color.rgbToHsl(this._input)
         }
     }
 
     get output() : ColorData {
         return {
             rgb: this._output,
-            hex: Color.rgbToHex(this._output)
+            hex: Color.rgbToHex(this._output),
+            hsl: Color.rgbToHsl(this._output)
         }
     }
 

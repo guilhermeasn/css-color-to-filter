@@ -249,6 +249,11 @@ next@14.2.15:
     "@next/swc-win32-ia32-msvc" "14.2.15"
     "@next/swc-win32-x64-msvc" "14.2.15"
 
+object-as-array@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/object-as-array/-/object-as-array-1.8.0.tgz#fa328d33a0ad316093ddd07faf98d81bd5179d82"
+  integrity sha512-fGP0GGYYzWqeVP03Yt7O031RWby0RT9VnrdXc7vyBH7MRkWsIKyn2HQDzOB1H512Cz+l9O6sQLlXfQIc8ca3bg==
+
 object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
