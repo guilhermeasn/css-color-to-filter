@@ -50,7 +50,7 @@ export default class Color {
         return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`.toUpperCase();
     }
 
-    static rgbToHsl(rgb : ColorRgb) : ColorHsl {
+    static rgbToHsl(rgb : ColorRgb, round : boolean = false, hueAngle : boolean = false) : ColorHsl {
         const avail : ColorRgb = keysMap(rgb, v => v / 255);
         const max : number = Math.max(...toArray(avail, 'value'));
         const min : number = Math.min(...toArray(avail, 'value'));
@@ -63,7 +63,8 @@ export default class Color {
                     (max === avail.b) ? (avail.r - avail.g) / d + 4 : hsl.h;
             hsl.h /= 6;
         }
-        return keysMap(hsl, v => v * 100);
+        if(hueAngle) hsl.h = (hsl.h * 360) / 100;
+        return keysMap(hsl, v => round ? Math.round(v * 100) : v * 100);
     }
 
     private readonly _input : Readonly<ColorRgb>;
@@ -79,7 +80,7 @@ export default class Color {
         return {
             rgb: this._input,
             hex: Color.rgbToHex(this._input),
-            hsl: Color.rgbToHsl(this._input)
+            hsl: Color.rgbToHsl(this._input, true, true)
         }
     }
 
@@ -87,7 +88,7 @@ export default class Color {
         return {
             rgb: this._output,
             hex: Color.rgbToHex(this._output),
-            hsl: Color.rgbToHsl(this._output)
+            hsl: Color.rgbToHsl(this._output, true, true)
         }
     }
 

@@ -48,7 +48,7 @@ export default class CSSFilter {
         return {
             target: this._target.output,
             result: this._result.output,
-            loss: result.loss,
+            loss: Math.round(result.loss),
             values: {
                 invert: result.values[0],
                 sepia: result.values[1],

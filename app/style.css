@@ -7,7 +7,6 @@
 html, body {
     max-width: 100vw;
     overflow-x: hidden;
-    margin: 10px;
 }
 
 a {
@@ -28,8 +27,5 @@ p {
     width: 100px;
     height: 100px;
     background-color: #fff;
-}
-
-.form-control {
-    margin: 10px;
+    border-radius: var(--bs-border-radius);
 }
