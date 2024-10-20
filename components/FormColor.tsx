@@ -18,9 +18,9 @@ export default function FormColor({ color, setColor } : FormColorProps) {
     useEffect(() => maskColor.completed ? setColor(Color.hexExpand(maskColor.result)) : undefined, [ maskColor ]);
 
     return (
-        <section className="py-5 bg-body-secondary">
+        <section className="py-5 bg-body-secondary bg-colors">
             <Container>
-                <Form.Label className="fw-bold">Color Picker</Form.Label>
+                <Form.Label className="fw-bold text-shadow h5">Color Picker</Form.Label>
                 <div className="d-flex">
                     <InputGroup>
                         <InputGroup.Text>#</InputGroup.Text>

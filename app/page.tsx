@@ -34,7 +34,7 @@ export default function Home() {
 
                     <Row>
 
-                        <Col md={ 6 } xl={ 4 }>
+                        <Col xl={ 4 }>
                             <Sample title="Oginal Color" sample={{ background: data.target.hex }}>
                                 { data.target.hex }<br />
                                 rgb({ data.target.rgb.r },{ data.target.rgb.g },{ data.target.rgb.b })<br />
@@ -44,7 +44,6 @@ export default function Home() {
 
                         <Col md={ 6 } xl={ 4 }>
                             <Sample title="CSS Filter" sample={{ filter: data.filter }}>
-                                <div className="text-start small my-2 border-bottom">{ data.css }</div>
                                 <div className={ data.loss < 10 ? 'text-success' : data.loss < 30 ? 'text-warning' : 'text-danger' }>
                                     <div className="fw-bold">
                                         <span className="px-2">Loss: { data.loss }</span>
@@ -54,14 +53,17 @@ export default function Home() {
                                 { data.result.hex }<br />
                                 rgb({ data.result.rgb.r },{ data.result.rgb.g },{ data.result.rgb.b })<br />
                                 hsl({ data.result.hsl.h }deg,{ data.result.hsl.s }%,{ data.result.hsl.l }%)
+                                <div className="text-start small my-2 border-top">{ data.css }</div>
                             </Sample>
                         </Col>
 
                         <Col md={ 6 } xl={ 4 }>
                             <Sample title="Add Opacity" sample={{ filter: cssFilterOpacity(data.filter, opacity) }}>
-                                <p className="fw-bold">{ opacity }%</p>
-                                <input placeholder="Opacity Range" type="range" min={ 0 } max={ 100 } step={ 1 } value={ opacity } onChange={ input => setOpacity(parseInt(input.currentTarget.value)) } />
-                                <div className="text-start small my-2">filter: { cssFilterOpacity(data.filter, opacity) }</div>
+                                <div className="my-4">
+                                    <p className="fw-bold">{ opacity }%</p>
+                                    <input placeholder="Opacity Range" type="range" min={ 0 } max={ 100 } step={ 1 } value={ opacity } onChange={ input => setOpacity(parseInt(input.currentTarget.value)) } />
+                                </div>
+                                <div className="text-start small my-3 border-top">filter: { cssFilterOpacity(data.filter, opacity) }</div>
                             </Sample>
                         </Col>
 

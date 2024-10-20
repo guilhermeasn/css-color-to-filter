@@ -29,3 +29,11 @@ p {
     background-color: #fff;
     border-radius: var(--bs-border-radius);
 }
+
+.bg-colors {
+    background: url(bg-colors-02.jpg) center no-repeat;
+}
+
+.text-shadow {
+    text-shadow: #fff 0px 0px 4px;
+}
