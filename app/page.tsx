@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import FormColor from "@/components/FormColor";
 import Header from "@/components/Header";
 import Sample from "@/components/Sample";
-import cssfilterdata, { ColorHex, CSSFilterData } from "@/core";
+import cssfilterdata, { ColorHex, CSSFilterData, cssFilterOpacity } from "@/core";
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
@@ -35,7 +35,7 @@ export default function Home() {
                     <Row>
 
                         <Col md={ 6 } xl={ 4 }>
-                            <Sample title="Oginal color" sample={ {background: data.target.hex} }>
+                            <Sample title="Oginal Color" sample={{ background: data.target.hex }}>
                                 { data.target.hex }<br />
                                 rgb({ data.target.rgb.r },{ data.target.rgb.g },{ data.target.rgb.b })<br />
                                 hsl({ data.target.hsl.h }deg,{ data.target.hsl.s }%,{ data.target.hsl.l }%)
@@ -43,7 +43,7 @@ export default function Home() {
                         </Col>
 
                         <Col md={ 6 } xl={ 4 }>
-                            <Sample title="CSS Filter" sample={ {filter: data.filter} }>
+                            <Sample title="CSS Filter" sample={{ filter: data.filter }}>
                                 <div className="text-start small my-2 border-bottom">{ data.css }</div>
                                 <div className={ data.loss < 10 ? 'text-success' : data.loss < 30 ? 'text-warning' : 'text-danger' }>
                                     <div className="fw-bold">
@@ -54,6 +54,14 @@ export default function Home() {
                                 { data.result.hex }<br />
                                 rgb({ data.result.rgb.r },{ data.result.rgb.g },{ data.result.rgb.b })<br />
                                 hsl({ data.result.hsl.h }deg,{ data.result.hsl.s }%,{ data.result.hsl.l }%)
+                            </Sample>
+                        </Col>
+
+                        <Col md={ 6 } xl={ 4 }>
+                            <Sample title="Add Opacity" sample={{ filter: cssFilterOpacity(data.filter, opacity) }}>
+                                <p className="fw-bold">{ opacity }%</p>
+                                <input placeholder="Opacity Range" type="range" min={ 0 } max={ 100 } step={ 1 } value={ opacity } onChange={ input => setOpacity(parseInt(input.currentTarget.value)) } />
+                                <div className="text-start small my-2">filter: { cssFilterOpacity(data.filter, opacity) }</div>
                             </Sample>
                         </Col>
 
