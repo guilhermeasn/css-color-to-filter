@@ -1,5 +1,6 @@
 "use client";
 
+import ButtonCopy from "@/components/ButtonCopy";
 import Footer from "@/components/Footer";
 import FormColor from "@/components/FormColor";
 import Header from "@/components/Header";
@@ -53,7 +54,12 @@ export default function Home() {
                                 { data.result.hex }<br />
                                 rgb({ data.result.rgb.r },{ data.result.rgb.g },{ data.result.rgb.b })<br />
                                 hsl({ data.result.hsl.h }deg,{ data.result.hsl.s }%,{ data.result.hsl.l }%)
-                                <div className="text-start small my-2 border-top">{ data.css }</div>
+                                <div className="d-flex my-2 border-top">
+                                    <div className="text-start small">{ data.css }</div>
+                                    <div className="text-end align-self-end">
+                                        <ButtonCopy text={ data.css } />
+                                    </div>
+                                </div>
                             </Sample>
                         </Col>
 
@@ -63,7 +69,12 @@ export default function Home() {
                                     <p className="fw-bold">{ opacity }%</p>
                                     <input placeholder="Opacity Range" type="range" min={ 0 } max={ 100 } step={ 1 } value={ opacity } onChange={ input => setOpacity(parseInt(input.currentTarget.value)) } />
                                 </div>
-                                <div className="text-start small my-3 border-top">filter: { cssFilterOpacity(data.filter, opacity) }</div>
+                                <div className="d-flex my-2 border-top">
+                                    <div className="text-start small">{ cssFilterOpacity(data.css, opacity) }</div>
+                                    <div className="text-end align-self-end">
+                                        <ButtonCopy text={ cssFilterOpacity(data.css, opacity) } />
+                                    </div>
+                                </div>
                             </Sample>
                         </Col>
 
@@ -84,25 +95,5 @@ export default function Home() {
         <Footer />
 
     </>;
-
-    // return data ? <>
-    //     {/* <Title /> */}
-    //     <FormControl type="color" value={ color } onChange={ input => setColor(input.currentTarget.value) } />
-    //     <h3>Original</h3>
-    //     <div className="sample" style={{background: color}} />
-    //     <h3>CSS Filter</h3>
-    //     <div className="sample" style={{filter: data.filter}} />
-    //     <h3>Css Filter With Opacity</h3>
-    //     <input placeholder="Opacity" type="range" min={ 0 } max={ 100 } step={ 1 } value={ opacity } onChange={ input => setOpacity(parseInt(input.currentTarget.value)) } />
-    //     <div className="sample" style={{filter: cssFilterOpacity(data.filter, opacity)}} />
-    //     <h3>Observações</h3>
-    //     <div>
-    //         <p>Original: { data.target.hex }</p>
-    //         <p>CSS Filter: { data.result.hex }</p>
-    //         <p>Perda: { data.loss }</p>
-    //         <p>Filtro: { data.filter }</p>
-    //         <p>Filtro Opacity: { cssFilterOpacity(data.filter, opacity) }</p>
-    //     </div>
-    // </> : <>Loading...</>;
 
 }

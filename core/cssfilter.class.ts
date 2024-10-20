@@ -58,7 +58,7 @@ export default class CSSFilter {
                 contrast: result.values[5],
             },
             filter,
-            css: 'filter: ' + filter,
+            css: 'filter: ' + filter + ';',
         };
     }
 

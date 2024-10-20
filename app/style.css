@@ -37,3 +37,12 @@ p {
 .text-shadow {
     text-shadow: #fff 0px 0px 4px;
 }
+
+.tooltip-inner {
+    background: #a4e3a4;
+    color: #042404;
+}
+
+.tooltip-arrow {
+    filter: brightness(0) saturate(100%) invert(88%) sepia(20%) saturate(634%) hue-rotate(62deg) brightness(97%) contrast(84%);
+}
