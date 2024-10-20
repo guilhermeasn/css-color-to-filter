@@ -29,3 +29,7 @@ p {
     height: 100px;
     background-color: #fff;
 }
+
+.form-control {
+    margin: 10px;
+}

@@ -7,14 +7,19 @@ export type {
     CSSFilters
 };
 
-export default function cssfilterdata(color: ColorHex | ColorRgb): CSSFilterData {
+export default function cssFilterData(color: ColorHex | ColorRgb): CSSFilterData {
     const cssfilter = new CSSFilter(new Color(color));
     return cssfilter.solve();
+}
+
+export function cssFilterOpacity(text: string, opacity : number) : string {
+    text = text.replace(/\s?opacity\(.+?\)/, '');
+    return `${text} opacity(${opacity}%)`;
 }
 
 export {
     Color,
     CSSFilter,
-    cssfilterdata
+    cssFilterData
 };
 
