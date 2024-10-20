@@ -1,3 +1,4 @@
+
 export type ColorHex = string;
 export type ColorRgb = { r: number, g: number, b: number };
 export type ColorData = { rgb: ColorRgb, hex: ColorHex };
@@ -170,6 +171,10 @@ export default class Color {
 
         return this;
 
+    }
+
+    reset() : void {
+        this._output = this._input;
     }
 
 }
