@@ -18,6 +18,8 @@ export default function Home() {
 
     useEffect(() => {
         const data = cssfilterdata(color);
+        console.clear();
+        console.dir(data);
         setData(data);
     }, [ color ]);
 
