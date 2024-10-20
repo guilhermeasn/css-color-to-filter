@@ -29,7 +29,7 @@ export default function Home() {
 
         <main>
 
-            <FormColor color={ color } setColor={ setColor } />
+            <FormColor color={ color } onPickColor={ setColor } onRetry={ () => setData(cssfilterdata(color)) } />
 
             <Container as='section' className="my-5">
 

@@ -34,6 +34,10 @@ p {
     background: url(bg-colors-02.jpg) center no-repeat;
 }
 
+.bg-bw {
+    background: url(bg-bw-02.jpg) center no-repeat;
+}
+
 .text-shadow {
     text-shadow: #fff 0px 0px 4px;
 }

@@ -12,7 +12,7 @@ export default function Sample({ title, sample, children } : SampleProps) {
         <Card className="my-3">
             <Card.Header className="text-center fw-bolder text-secondary-emphasis">{ title }</Card.Header>
             <Card.Body className="text-center m-auto">
-                <div className="img-fluid img-thumbnail">
+                <div className="img-fluid img-thumbnail bg-bw">
                     <div className="sample" style={ sample } />
                 </div>
             </Card.Body>
