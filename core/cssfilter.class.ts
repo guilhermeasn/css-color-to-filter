@@ -1,98 +1,173 @@
-import Color, { ColorHex, ColorRgb } from "./color.class";
+import reduce from "object-as-array/reduce";
+import Color, { ColorData } from "./color.class";
+
+export type CSSFilterData = {
+    target: ColorData,
+    result: ColorData,
+    loss: number,
+    values: Record<CSSFilters, number>,
+    filter: string,
+    css: string
+}
+
+export type CSSFilterInfo = {
+    loss : number,
+    values: number[]
+}
+
+export type CSSFilters = 'invert' | 'sepia' | 'saturate' | 'hueRotate' | 'brightness' | 'contrast';
 
 export default class CSSFilter {
 
-    private readonly _target : Readonly<ColorRgb>;
-    private _blackBase : boolean;
+    private _target : Color;
+    private _result : Color;
 
-    private _loss :number = Infinity;
-
-    private _result : string | null = null;
-
-    constructor(hexOrRgb: ColorHex | ColorRgb, blackBase: boolean = true) {
-        this._target = typeof hexOrRgb === 'string'
-            ? Color.hexToRgb(hexOrRgb)
-            : Color.rgbFix(hexOrRgb);
-        this._blackBase = blackBase;
+    constructor(target : Color) {
+        this._target = target;
+        this._result = new Color('#000000');
     }
 
-    loss(color : ColorRgb) : number {
+    solve(blackbase : boolean = true) : CSSFilterData {
 
-        let loss : number = 0;
+        const result = this._solveNarrow(this._solveWide());
 
-        if(this._target.r > color.r) loss += this._target.r - color.r
-        if(this._target.r < color.r) loss += color.r - this._target.r;
-        if(this._target.g > color.g) loss += this._target.g - color.g
-        if(this._target.g < color.g) loss += color.g - this._target.g;
-        if(this._target.b > color.b) loss += this._target.b - color.b
-        if(this._target.b < color.b) loss += color.b - this._target.b;
+        const fmt = (value : number, multiplier = 1) => {
+            return Math.round(value * multiplier);
+        }
 
-        return loss;
+        const filter : string = [
+            blackbase ? 'brightness(0) saturate(100%)' : '',
+            `invert(${fmt(result.values[0])}%)`,
+            `sepia(${fmt(result.values[1])}%)`,
+            `saturate(${fmt(result.values[2])}%)`,
+            `hue-rotate(${fmt(result.values[3], 3.6)}deg)`,
+            `brightness(${fmt(result.values[4])}%)`,
+            `contrast(${fmt(result.values[5])}%)`
+        ].join(' ')
+
+        return {
+            target: this._target.output,
+            result: this._result.output,
+            loss: result.loss,
+            values: {
+                invert: result.values[0],
+                sepia: result.values[1],
+                saturate: result.values[2],
+                hueRotate: result.values[3],
+                brightness: result.values[4],
+                contrast: result.values[5],
+            },
+            filter,
+            css: 'filter: ' + filter,
+        };
+    }
+
+    private _loss(filters : number[]) : number {
+        
+        this._result.reset();
+
+        this._result.batch([
+            [ 'invert', filters[0] / 100 ],
+            [ 'sepia', filters[1] / 100 ],
+            [ 'saturate', filters[2] / 100 ],
+            [ 'hueRotate', filters[3] * 3.6 ],
+            [ 'brightness', filters[4] / 100 ],
+            [ 'contrast', filters[5] / 100 ],
+        ]);
+    
+        const result = this._result.output;
+        const target = this._target.output;
+    
+        return (
+            reduce(result.rgb, (t, _, k) => t + Math.abs(result.rgb[k] - target.rgb[k]), 0) +
+            reduce(result.hsl, (t, _, k) => t + Math.abs(result.hsl[k] - target.hsl[k]), 0)
+        );
 
     }
 
-    async run() : Promise<string> {
-        return new Promise((resolve, reject) => {
+    private _spsa(A : number, a : number[], c : number, values : number[], iters : number) : CSSFilterInfo {
+        
+        const alpha : number = 1;
+        const gamma : number = 0.16666666666666666;
+    
+        let best : number[] = [];
+        let bestLoss : number = Infinity;
 
-            let selected : Color | undefined;
-            let text = 'filter: ';
-            if(this._blackBase) text += 'brightness(0) saturate(100%) ';
+        const deltas : number[] = new Array(6);
+        const highArgs : number[] = new Array(6);
+        const lowArgs : number[] = new Array(6);
 
-            for(let brightness = 0; brightness <= 300; brightness++) {
-                for(let contrast = -150; contrast <= 150; contrast++) {
-                    for(let grayscale = -100; grayscale <= 100; grayscale++) {
-                        for(let hueRotate = 0; hueRotate <=360; hueRotate++) {
-                            for(let invert = -100; invert <= 100; invert++) {
-                                for(let saturate = -30; saturate <= 30; saturate++) {
-                                    for(let sepia = -100; sepia <= 100; sepia++) {
+        const fix = (value : number, idx : number) => {
 
-                                        const color = new Color('#000');
+            let max = 100;
 
-                                        color
-                                            .transform('brightness', brightness / 10)
-                                            .transform('contrast', contrast / 10)
-                                            .transform('grayscale', grayscale / 10)
-                                            .transform('hueRotate', hueRotate)
-                                            .transform('invert', invert / 10)
-                                            .transform('saturate', saturate)
-                                            .transform('sepia', sepia / 10);
-
-                                        const loss = this.loss(color.output.rgb);
-
-                                        if(this.loss(color.output.rgb) < this._loss) {
-                                            selected = color;
-                                            this._loss = loss;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            if (idx === 2 /* saturate */) max = 7500;
+            else if (idx === 4 /* brightness */ || idx === 5 /* contrast */) max = 200;
+      
+            if (idx === 3 /* hue-rotate */) {
+                if (value > max) value %= max;
+                else if (value < 0) value = max + value % max;
+            } else if (value < 0) value = 0;
+            else if (value > max) value = max;
             
-            if(!selected) {
-                reject('Color not found');
-                return;
+            return value;
+
+        }
+    
+        for (let k = 0; k < iters; k++) {
+
+            const ck = c / Math.pow(k + 1, gamma);
+
+            for (let i = 0; i < 6; i++) {
+                deltas[i] = Math.random() > 0.5 ? 1 : -1;
+                highArgs[i] = values[i] + ck * deltas[i];
+                lowArgs[i] = values[i] - ck * deltas[i];
+            }
+    
+            const lossDiff = this._loss(highArgs) - this._loss(lowArgs);
+
+            for (let i = 0; i < 6; i++) {
+                const g = lossDiff / (2 * ck) * deltas[i];
+                const ak = a[i] / Math.pow(A + k + 1, alpha);
+                values[i] = fix(values[i] - ak * g, i);
+            }
+    
+            const loss = this._loss(values);
+
+            if (loss < bestLoss) {
+                best = values.slice(0);
+                bestLoss = loss;
             }
 
-            text = selected?.output.hex
+        }
 
-            this._result = text;
-            resolve(text);
-
-        });
+        return { values: best, loss: bestLoss };
+    
     }
 
-    opacity(adjust : number) : string {
-
-        if(!this._result) throw new Error('The filter has not been created yet, use the run method before trying to change the opacity.')
-
-        // ...
-
-        return this._result;
-
+    private _solveNarrow({ loss, values } : CSSFilterInfo) {
+        const A1 = loss + 1;
+        const a = [0.25 * A1, 0.25 * A1, A1, 0.25 * A1, 0.2 * A1, 0.2 * A1];
+        return this._spsa(loss, a, 2, values, 500);
     }
 
+    private _solveWide() : CSSFilterInfo {
+
+        const A = 5;
+        const c = 15;
+        const a = [60, 180, 18000, 600, 1.2, 1.2];
+    
+        let best : CSSFilterInfo = { loss: Infinity, values: [] };
+
+        for (let i = 0; best.loss > 25 && i < 3; i++) {
+            const initial = [50, 20, 3750, 50, 100, 100];
+            const result = this._spsa(A, a, c, initial, 1000);
+            if (result.loss < best.loss) {
+                best = result;
+            }
+        }
+
+        return best;
+    }
+    
 }

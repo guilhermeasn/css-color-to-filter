@@ -5,7 +5,7 @@ export type ColorHex = string;
 export type ColorRgb = { r: number, g: number, b: number };
 export type ColorHsl = { h: number, s: number, l: number };
 export type ColorData = { rgb: ColorRgb, hex: ColorHex, hsl: ColorHsl };
-export type ColorFilters = 'hueRotate' | 'grayscale' | 'sepia' | 'saturate' | 'brightness' | 'contrast' | 'invert'
+export type ColorFilters = 'hueRotate' | 'grayscale' | 'sepia' | 'saturate' | 'brightness' | 'contrast' | 'invert';
 
 /**
  * Class Color
@@ -65,7 +65,7 @@ export default class Color {
         }
         return keysMap(hsl, v => v * 100);
     }
-    
+
     private readonly _input : Readonly<ColorRgb>;
     private _output : ColorRgb
 
@@ -191,6 +191,11 @@ export default class Color {
 
         return this;
 
+    }
+
+    batch(transforms : Array<[ ColorFilters, number ]>) : this {
+        transforms.forEach(([ filter, adjust ]) => this.transform(filter, adjust));
+        return this;
     }
 
     reset() : void {

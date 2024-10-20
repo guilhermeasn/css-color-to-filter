@@ -2,33 +2,34 @@
 
 import Title from "@/components/Title";
 import Color from "@/core/color.class";
-import { useEffect } from "react";
-
-// const css = new CSSFilter(color);
-
-/**
- * brightness 0.0 a 30.0
- * contrast -15.0 a +15.0
- * grayscale -10.0 a +10.0
- * hueRotate 0 a +360
- * invert -10.0 a +10.0
- * saturate -30 a +30
- * sepia -10.0 a 10.0
- */
+import CSSFilter, { CSSFilterData } from "@/core/cssfilter.class";
+import { useEffect, useState } from "react";
 
 export default function Home() {
 
+    const color = '#00a4d6';
+    const [ data, setData ] = useState<CSSFilterData>();
+
     useEffect(() => {
-        console.clear();
-        const color = new Color('#00a4d6');
-        color.transform('sepia', 1).transform('brightness', .75);
-        console.log(color.input, color.output);
+        const cssfilter = new CSSFilter(new Color(color));
+        const data = cssfilter.solve();
+        console.dir(data);
+        setData(data);
     }, []);
 
-    return <>
+    return data ? <>
         <Title />
-        {/* <div className="sample" style={{background: color.input.hex }} />
-        <div className="sample" style={{background: color.output.hex }} /> */}
-    </>;
+        <h3>Original</h3>
+        <div className="sample" style={{background: color}} />
+        <h3>CSS Filter</h3>
+        <div className="sample" style={{filter: data.filter}} />
+        <h3>Observações</h3>
+        <div>
+            <p>Original: { data.target.hex }</p>
+            <p>CSS Filter: { data.result.hex }</p>
+            <p>Perda: { data.loss }</p>
+            <p>Filtro: { data.filter }</p>
+        </div>
+    </> : <>Loading...</>;
 
 }
