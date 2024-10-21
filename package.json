@@ -2,6 +2,11 @@
   "name": "css-color-to-filter",
   "version": "0.2.0",
   "private": true,
+  "author": {
+    "name": "Guilherme Neves",
+    "email": "contact@gn.dev.br",
+    "url": "https://gn.dev.br/"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

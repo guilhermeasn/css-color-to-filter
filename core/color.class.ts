@@ -70,10 +70,10 @@ export default class Color {
     private readonly _input : Readonly<ColorRgb>;
     private _output : ColorRgb
 
-    constructor(hexOrRgb: ColorHex | ColorRgb) {
-        this._output = this._input = typeof hexOrRgb === 'string'
-            ? Color.hexToRgb(hexOrRgb)
-            : Color.rgbFix(hexOrRgb);
+    constructor(input: ColorHex | ColorRgb) {
+        this._output = this._input = typeof input === 'string'
+            ? Color.hexToRgb(input)
+            : Color.rgbFix(input);
     }
 
     get input() : ColorData {
