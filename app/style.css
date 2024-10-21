@@ -31,11 +31,15 @@ p {
 }
 
 .bg-colors {
-    background: url(bg-colors-02.jpg) center no-repeat;
+    background: url(../images/bg-colors-02.jpg) center no-repeat;
 }
 
 .bg-bw {
-    background: url(bg-bw-02.jpg) center no-repeat;
+    background: url(../images/bg-bw-02.jpg) center no-repeat;
+}
+
+.bg-pineapple {
+    background: url(../images/bg-pineapple-01.png) center no-repeat;
 }
 
 .text-shadow {
