@@ -5,7 +5,7 @@ export type CSSFilterData = {
     target: ColorData,
     result: ColorData,
     loss: number,
-    values: Record<CSSFilters, number>,
+    values: Filters,
     filter: string,
     css: string
 }
@@ -15,19 +15,27 @@ export type CSSFilterInfo = {
     values: number[]
 }
 
-export type CSSFilters = 'invert' | 'sepia' | 'saturate' | 'hueRotate' | 'brightness' | 'contrast';
+export type Filters = {
+    invert: number,
+    sepia: number,
+    saturate: number,
+    hueRotate: number,
+    brightness: number,
+    contrast: number
+}
 
 export default class CSSFilter {
 
-    private _target : Color;
-    private _result : Color;
+    private _target   : Color;
+    private _result   : Color;
+    private _filters ?: Filters;
 
     constructor(target : Color) {
         this._target = target;
         this._result = new Color('#000000');
     }
 
-    solve(blackbase : boolean = true) : CSSFilterData {
+    private _solve(blackbase : boolean = true) : Filters {
 
         const result = this._solveNarrow(this._solveWide());
 
@@ -62,17 +70,17 @@ export default class CSSFilter {
         };
     }
 
-    private _loss(filters : number[]) : number {
+    private _loss(filters : Filters) : number {
         
         this._result.reset();
 
         this._result.batch([
-            [ 'invert', filters[0] / 100 ],
-            [ 'sepia', filters[1] / 100 ],
-            [ 'saturate', filters[2] / 100 ],
-            [ 'hueRotate', filters[3] * 3.6 ],
-            [ 'brightness', filters[4] / 100 ],
-            [ 'contrast', filters[5] / 100 ],
+            [ 'invert', filters.invert / 100 ],
+            [ 'sepia', filters.sepia / 100 ],
+            [ 'saturate', filters.saturate / 100 ],
+            [ 'hueRotate', filters.hueRotate * 3.6 ],
+            [ 'brightness', filters.brightness / 100 ],
+            [ 'contrast', filters.contrast / 100 ],
         ]);
     
         const result = this._result.output;

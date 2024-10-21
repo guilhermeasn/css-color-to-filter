@@ -94,34 +94,13 @@ export default class Color {
 
     transform(filter : ColorFilters, adjust : number) : this {
 
-        const multiply = (matrix : [ number, number, number, number, number, number, number, number, number ]) : void => {
-            const r = this._output.r * matrix[0] + this._output.g * matrix[1] + this._output.b * matrix[2];
-            const g = this._output.r * matrix[3] + this._output.g * matrix[4] + this._output.b * matrix[5];
-            const b = this._output.r * matrix[6] + this._output.g * matrix[7] + this._output.b * matrix[8];
-            this._output = Color.rgbFix({ r, g, b });
-        }
-
-        const linear = (slope : number, intercept : number = 0) : void => {
-            const r = this._output.r * slope + intercept * 255;
-            const g = this._output.g * slope + intercept * 255;
-            const b = this._output.b * slope + intercept * 255;
-            this._output = Color.rgbFix({ r, g, b });
-        }
-        
-        const invert = (adjust : number) : void => {
-            const r = (adjust + this._output.r / 255 * (1 - 2 * adjust)) * 255;
-            const g = (adjust + this._output.g / 255 * (1 - 2 * adjust)) * 255;
-            const b = (adjust + this._output.b / 255 * (1 - 2 * adjust)) * 255;
-            this._output = Color.rgbFix({ r, g, b });
-        }
-
         switch(filter) {
 
             case 'hueRotate':
                 const angle = adjust / 180 * Math.PI;
                 const sin = Math.sin(angle);
                 const cos = Math.cos(angle);
-                multiply([
+                this._multiply([
                     0.213 + cos * 0.787 - sin * 0.213,
                     0.715 - cos * 0.715 - sin * 0.715,
                     0.072 - cos * 0.072 + sin * 0.928,
@@ -135,7 +114,7 @@ export default class Color {
                 break;
 
             case 'grayscale':
-                multiply([
+                this._multiply([
                     0.2126 + 0.7874 * (1 - adjust),
                     0.7152 - 0.7152 * (1 - adjust),
                     0.0722 - 0.0722 * (1 - adjust),
@@ -149,7 +128,7 @@ export default class Color {
                 break;
 
             case 'sepia':
-                multiply([
+                this._multiply([
                     0.393 + 0.607 * (1 - adjust),
                     0.769 - 0.769 * (1 - adjust),
                     0.189 - 0.189 * (1 - adjust),
@@ -163,7 +142,7 @@ export default class Color {
                 break;
 
             case 'saturate':
-                multiply([
+                this._multiply([
                     0.213 + 0.787 * adjust,
                     0.715 - 0.715 * adjust,
                     0.072 - 0.072 * adjust,
@@ -177,15 +156,15 @@ export default class Color {
                 break;
 
             case 'brightness':
-                linear(adjust);
+                this._linear(adjust);
                 break;
 
             case 'contrast':
-                linear(adjust, -(0.5 * adjust) + 0.5)
+                this._linear(adjust, -(0.5 * adjust) + 0.5)
                 break;
 
             case 'invert':
-                invert(adjust);
+                this._invert(adjust);
                 break;
 
         }
@@ -201,6 +180,27 @@ export default class Color {
 
     reset() : void {
         this._output = this._input;
+    }
+
+    private _multiply(matrix : [ number, number, number, number, number, number, number, number, number ]) : void {
+        const r = this._output.r * matrix[0] + this._output.g * matrix[1] + this._output.b * matrix[2];
+        const g = this._output.r * matrix[3] + this._output.g * matrix[4] + this._output.b * matrix[5];
+        const b = this._output.r * matrix[6] + this._output.g * matrix[7] + this._output.b * matrix[8];
+        this._output = Color.rgbFix({ r, g, b });
+    }
+
+    private _linear (slope : number, intercept : number = 0) : void {
+        const r = this._output.r * slope + intercept * 255;
+        const g = this._output.g * slope + intercept * 255;
+        const b = this._output.b * slope + intercept * 255;
+        this._output = Color.rgbFix({ r, g, b });
+    }
+    
+    private _invert (adjust : number) : void {
+        const r = (adjust + this._output.r / 255 * (1 - 2 * adjust)) * 255;
+        const g = (adjust + this._output.g / 255 * (1 - 2 * adjust)) * 255;
+        const b = (adjust + this._output.b / 255 * (1 - 2 * adjust)) * 255;
+        this._output = Color.rgbFix({ r, g, b });
     }
 
 }
