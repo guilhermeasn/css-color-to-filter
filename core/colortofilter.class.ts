@@ -84,7 +84,7 @@ export default class ColorToFilter {
             `contrast(${ Math.round(this.values.contrast) }%)`,
             isNaN(opacity) ? '' : `opacity(${ Math.round(opacity) }%)`,
             complete ? ';' : ''
-        ].join(' ').replace(/\s{1,}/, ' ').trim();
+        ].join(' ').replace(/\s+/, ' ').replace(/\s+;$/, ';').trim();
     }
 
     private _calculate() : CtfInfo {
@@ -106,7 +106,7 @@ export default class ColorToFilter {
             hueRotate: 600, brightness: 1.2, contrast: 1.2
         }
 
-        for (let i = 0; best.loss > 25 && i < 5; i++) {
+        for (let i = 0; best.loss > 10 && i < 5; i++) {
             const result = this._spsa(initialValues, rateValues, 5, 15, 1000);
             if (result.loss < best.loss) best = result;
         }
