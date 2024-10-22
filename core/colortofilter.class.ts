@@ -32,6 +32,7 @@ export default class ColorToFilter {
 
         switch(filter) {
             case 'saturate': max = 7500; break;
+            case 'hueRotate': max = 360; break;
             case 'brightness': case 'contrast': max = 200; break;
             default: max = 100;
         }
@@ -75,7 +76,7 @@ export default class ColorToFilter {
         opacity = opacity > 100 ? 100 : opacity < 0 ? 0 : opacity;
         return [
             complete ? 'filter:' : '',
-            preserveOrigin ? '' : 'brightness(0) saturate(100%)',
+            preserveOrigin ? '' : 'brightness(0%) saturate(100%)',
             `invert(${ Math.round(this.values.invert) }%)`,
             `sepia(${ Math.round(this.values.sepia) }%)`,
             `saturate(${ Math.round(this.values.saturate) }%)`,
@@ -98,12 +99,12 @@ export default class ColorToFilter {
         
         const initialValues : CtfValues = {
             invert: 50, sepia: 20, saturate: 3750,
-            hueRotate: 50, brightness: 100, contrast: 100
+            hueRotate: 180, brightness: 100, contrast: 100
         }
 
         const rateValues : CtfValues = {
             invert: 60, sepia: 180, saturate: 18000,
-            hueRotate: 600, brightness: 1.2, contrast: 1.2
+            hueRotate: 360, brightness: 1.2, contrast: 1.2
         }
 
         for (let i = 0; best.loss > 10 && i < 5; i++) {
@@ -118,10 +119,7 @@ export default class ColorToFilter {
             hueRotate: 0.25 * adjust, brightness: 0.2 * adjust, contrast: 0.2 * adjust
         }
 
-        best = this._spsa(best.values, tuning, best.loss, 2, 500);
-        best.values.hueRotate *= 3.6;
-
-        return best;
+        return this._spsa(best.values, tuning, best.loss, 2, 500);
 
     }
 
@@ -181,12 +179,12 @@ export default class ColorToFilter {
         this._result.reset();
 
         this._result.batch([
-            [ 'invert', values.invert / 100 ],
-            [ 'sepia', values.sepia / 100 ],
-            [ 'saturate', values.saturate / 100 ],
-            [ 'hueRotate', values.hueRotate * 3.6 ],
-            [ 'brightness', values.brightness / 100 ],
-            [ 'contrast', values.contrast / 100 ],
+            [ 'invert', values.invert, true ],
+            [ 'sepia', values.sepia, true ],
+            [ 'saturate', values.saturate, true ],
+            [ 'hueRotate', values.hueRotate, false ],
+            [ 'brightness', values.brightness, true ],
+            [ 'contrast', values.contrast, true ],
         ]);
     
         const result = this._result.output;

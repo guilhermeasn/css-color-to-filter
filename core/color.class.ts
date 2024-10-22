@@ -92,7 +92,11 @@ export default class Color {
         }
     }
 
-    transform(filter : ColorFilters, adjust : number) : this {
+    transform(filter : ColorFilters, adjust : number, percentage : boolean) : this {
+
+        if(percentage) {
+            adjust = filter === 'hueRotate' ? adjust * 3.6 : adjust / 100;
+        }
 
         switch(filter) {
 
@@ -173,8 +177,14 @@ export default class Color {
 
     }
 
-    batch(transforms : Array<[ ColorFilters, number ]>) : this {
-        transforms.forEach(([ filter, adjust ]) => this.transform(filter, adjust));
+    /**
+     * batch
+     * batch of transformations
+     * @param transforms Array<[ Filter Key, Adjust Number, Percentage Boolean ]>
+     * @returns this
+     */
+    batch(transforms : Array<[ ColorFilters, number, boolean ]>) : this {
+        transforms.forEach(([ filter, adjust, percentage ]) => this.transform(filter, adjust, percentage));
         return this;
     }
 
