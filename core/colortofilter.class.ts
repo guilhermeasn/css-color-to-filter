@@ -43,12 +43,12 @@ export default class ColorToFilter {
 
     private _target: Color;
     private _result: Color;
-    private _infos: CtfInfo;
+    private _info: CtfInfo;
 
     constructor(target : ColorHex | ColorRgb) {
         this._target = new Color(target);
         this._result = new Color('#000000');
-        this._infos = this._calculate();
+        this._info = this._calculate();
     }
 
     get target() : ColorData {
@@ -60,15 +60,15 @@ export default class ColorToFilter {
     }
 
     get loss() : number {
-        return this._infos.loss;
+        return this._info.loss;
     }
 
     get values() : CtfValues {
-        return this._infos.values;
+        return this._info.values;
     }
 
     recalculate() : this {
-        this._infos = this._calculate();
+        this._info = this._calculate();
         return this;
     }
 
@@ -107,7 +107,7 @@ export default class ColorToFilter {
             hueRotate: 360, brightness: 1.2, contrast: 1.2
         }
 
-        for (let i = 0; best.loss > 10 && i < 5; i++) {
+        for (let i = 0; best.loss > 20 && i < 5; i++) {
             const result = this._spsa(initialValues, rateValues, 5, 15, 1000);
             if (result.loss < best.loss) best = result;
         }
@@ -118,7 +118,7 @@ export default class ColorToFilter {
             invert: 0.25 * adjust, sepia: 0.25 * adjust, saturate: adjust,
             hueRotate: 0.25 * adjust, brightness: 0.2 * adjust, contrast: 0.2 * adjust
         }
-
+        
         return this._spsa(best.values, tuning, best.loss, 2, 500);
 
     }
