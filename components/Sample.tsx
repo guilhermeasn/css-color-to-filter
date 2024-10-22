@@ -1,5 +1,8 @@
+import { ColorData } from "@/core";
 import { CSSProperties, ReactNode } from "react";
-import { Card } from "react-bootstrap";
+import { Card, FormCheck } from "react-bootstrap";
+import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import ButtonCopy from "./ButtonCopy";
 
 export type SampleProps = {
     title     : string;
@@ -21,5 +24,78 @@ export default function Sample({ title, sample, figure = false, children } : Sam
                 { children }
             </Card.Footer>
         </Card>
+    )
+}
+
+export type SampleOriginalProps = {
+    target: ColorData
+}
+
+export function SampleOriginal({ target: {hex, rgb, hsl} } : SampleOriginalProps) {
+    return (
+        <Sample title="Oginal Color" sample={{ background: hex }}>
+            { hex }<br />
+            rgb({ rgb.r },{ rgb.g },{ rgb.b })<br />
+            hsl({ hsl.h }deg,{ hsl.s }%,{ hsl.l }%)
+        </Sample>
+    )
+}
+
+export type SampleCSSFilterProps = {
+    filter: string;
+    filterComplete: string;
+    loss: number;
+    result: ColorData;
+}
+
+export function SampleCSSFilter({ filter, filterComplete, loss, result } : SampleCSSFilterProps) {
+    return (
+        <Sample title="CSS Filter" sample={{ filter }}>
+            <div className={ loss < 10 ? 'text-success' : loss < 30 ? 'text-warning' : 'text-danger' }>
+                <div className="fw-bold">
+                    <span className="px-2">Loss: { loss }</span>
+                    { loss < 10 ? <FaCheckCircle /> : <FaExclamationTriangle /> }
+                </div>
+            </div>
+            { result.hex }<br />
+            rgb({ result.rgb.r },{ result.rgb.g },{ result.rgb.b })<br />
+            hsl({ result.hsl.h }deg,{ result.hsl.s }%,{ result.hsl.l }%)
+            <div className="d-flex my-2 border-top">
+                <div className="text-start small">{ filterComplete }</div>
+                <div className="text-end align-self-end">
+                    <ButtonCopy text={ filterComplete } />
+                </div>
+            </div>
+        </Sample>
+    )
+}
+
+export type SampleAddOpacityProps = {
+    opacity: number;
+    preserve: boolean;
+    filter: string;
+    filterComplete: string;
+    onChangeOpacity: (opacity : number) => void;
+    onChangePreserve: () => void;
+}
+
+export function SampleAddOpacity({ opacity, preserve, filter, filterComplete, onChangeOpacity, onChangePreserve } : SampleAddOpacityProps) {
+    return (
+        <Sample title="Add Opacity" sample={{ filter }} figure>
+            <div className="my-4">
+                <p className="fw-bold">{ opacity }%</p>
+                <input placeholder="Opacity Range" type="range" min={ 0 } max={ 100 } step={ 1 } value={ opacity } onChange={ input => onChangeOpacity(parseInt(input.currentTarget.value)) } />
+                <div className="d-flex justify-content-center">
+                    <label>Preserve Origin</label>
+                    <FormCheck className="ms-2" type="switch" checked={ preserve } onChange={ () => onChangePreserve() } />
+                </div>
+            </div>
+            <div className="d-flex my-2 border-top">
+                <div className="text-start small">{ filterComplete }</div>
+                <div className="text-end align-self-end">
+                    <ButtonCopy text={ filterComplete } />
+                </div>
+            </div>
+        </Sample>
     )
 }
