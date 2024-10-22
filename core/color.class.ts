@@ -33,12 +33,11 @@ export default class Color {
     }
 
     static rgbFix(rgb : ColorRgb) : ColorRgb {
-        const fix = (num : number) : number => {
+        return keysMap(rgb, num => {
             num = num < 0 ? 0 : num;
             num = num > 255 ? 255 : num;
             return Math.round(num);
-        }
-        return keysMap(rgb, v => fix(v));
+        });
     }
 
     static rgbToHex(rgb : ColorRgb) : ColorHex {
