@@ -26,7 +26,7 @@ p {
 .sample {
     width: 100px;
     height: 100px;
-    background-color: #fff;
+    background: #000;
     border-radius: var(--bs-border-radius);
 }
 
@@ -39,7 +39,7 @@ p {
 }
 
 .bg-pineapple {
-    background: url(../images/bg-pineapple-01.png) center no-repeat;
+    background: url(../images/bg-pineapple-02.jpg) center no-repeat;
 }
 
 .text-shadow {

@@ -71,17 +71,17 @@ export default class ColorToFilter {
         return this;
     }
 
-    CSS(complete : boolean = true, preserveOrigin : boolean = false, opacity : number = NaN) : string {
+    filter(complete : boolean = false, preserveOrigin : boolean = false, opacity : number = NaN) : string {
         opacity = opacity > 100 ? 100 : opacity < 0 ? 0 : opacity;
         return [
             complete ? 'filter:' : '',
-            preserveOrigin ? 'brightness(0) saturate(100%)' : '',
+            preserveOrigin ? '' : 'brightness(0) saturate(100%)',
             `invert(${ Math.round(this.values.invert) }%)`,
-            `sepia(${ Math.round(this.values.invert) }%)`,
-            `saturate(${ Math.round(this.values.invert) }%)`,
-            `hue-rotate(${ Math.round(this.values.invert) }deg)`,
-            `brightness(${ Math.round(this.values.invert) }%)`,
-            `contrast(${ Math.round(this.values.invert) }%)`,
+            `sepia(${ Math.round(this.values.sepia) }%)`,
+            `saturate(${ Math.round(this.values.saturate) }%)`,
+            `hue-rotate(${ Math.round(this.values.hueRotate) }deg)`,
+            `brightness(${ Math.round(this.values.brightness) }%)`,
+            `contrast(${ Math.round(this.values.contrast) }%)`,
             isNaN(opacity) ? '' : `opacity(${ Math.round(opacity) }%)`,
             complete ? ';' : ''
         ].join(' ').replace(/\s{1,}/, ' ').trim();
