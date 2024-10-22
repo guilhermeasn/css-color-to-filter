@@ -86,7 +86,7 @@ export function SampleAddOpacity({ opacity, preserve, filter, filterComplete, on
                 <p className="fw-bold">{ opacity }%</p>
                 <input placeholder="Opacity Range" type="range" min={ 0 } max={ 100 } step={ 1 } value={ opacity } onChange={ input => onChangeOpacity(parseInt(input.currentTarget.value)) } />
                 <div className="d-flex justify-content-center">
-                    <label>Preserve Origin</label>
+                    <label className="fw-bolder">Preserve Origin</label>
                     <FormCheck className="ms-2" type="switch" checked={ preserve } onChange={ () => onChangePreserve() } />
                 </div>
             </div>
