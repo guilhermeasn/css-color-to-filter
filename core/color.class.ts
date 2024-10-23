@@ -57,8 +57,8 @@ export default class Color {
                     (max === avail.g) ? (avail.b - avail.r) / d + 2 :
                     (max === avail.b) ? (avail.r - avail.g) / d + 4 : hsl.h;
             hsl.h /= 6;
+            hsl.h *= 3.6;
         }
-        hsl.h = (hsl.h * 360) / 100;
         return keysMap(hsl, v => Math.round(v * 100));
     }
 
