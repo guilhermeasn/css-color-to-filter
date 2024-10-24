@@ -107,7 +107,7 @@ export default class ColorToFilter {
             hueRotate: 360, brightness: 1.2, contrast: 1.2
         }
 
-        for (let i = 0; best.loss > 20 && i < 5; i++) {
+        for (let i = 0; best.loss > 20 && i < 10; i++) {
             const result = this._spsa(initialValues, rateValues, 5, 15, 1000);
             if (result.loss < best.loss) best = result;
         }
