@@ -5,18 +5,22 @@ import FormColor from "@/components/FormColor";
 import Header from "@/components/Header";
 import { SampleAddOpacity, SampleCSSFilter, SampleOriginal } from "@/components/Sample";
 import { Color, ColorHex, colorToFilter, ColorToFilter } from "@/core";
+import { applyMask, getPresetMask } from "mask-hooks";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-export type HomeProps = {
-    colorParam ?: ColorHex
-}
+export default function Home() {
 
-export default function Home({ colorParam } : HomeProps) {
+    let colorParam : ColorHex | null = useSearchParams().get('color');
 
     const initialColor : ColorHex = useMemo(() => {
-        colorParam = Color.hexExpand(colorParam ?? '');
-        return Color.hexPattern.test(colorParam) ? colorParam : Color.rgbToHex(Color.rgbRandom());
+        if(colorParam) {
+            colorParam = applyMask(colorParam, getPresetMask('COLOR_HEX'));
+            colorParam = Color.hexExpand(colorParam ?? '');
+            if(Color.hexPattern.test(colorParam)) return colorParam;
+        }
+        return Color.rgbToHex(Color.rgbRandom());
     }, [ colorParam ]);
 
     const [ preserve, setPreserve ] = useState<boolean>(false);
