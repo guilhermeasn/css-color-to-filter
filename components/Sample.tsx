@@ -1,6 +1,6 @@
 import { ColorData } from "@/core";
-import { CSSProperties, ReactNode } from "react";
-import { Button, Card, FormCheck } from "react-bootstrap";
+import { CSSProperties, ReactNode, useRef, useState } from "react";
+import { Button, Card, FormCheck, Overlay, Tooltip } from "react-bootstrap";
 import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import ButtonCopy from "./ButtonCopy";
 
@@ -51,9 +51,24 @@ export type SampleCSSFilterProps = {
 }
 
 export function SampleCSSFilter({ filter, filterComplete, loss, lossPercentage, result, onRetry } : SampleCSSFilterProps) {
+    
+    const target = useRef<HTMLDivElement | null>(null);
+    const [ alert, setAlert ] = useState<boolean>(false);
+    
+    const onAlert = () => {
+        setAlert(true);
+        setTimeout(() => setAlert(false), 1500);
+    }
+
+
     return (
         <Sample title="CSS Filter" sample={{ filter }}>
-            <div className={ loss < 10 ? 'text-success' : loss < 30 ? 'text-warning' : 'text-danger' }>
+
+            <Overlay target={ target.current } show={ alert } placement="bottom">
+                { props => <Tooltip id="button-tooltip-2" {...props}>{loss} points loss</Tooltip> }
+            </Overlay>
+
+            <div ref={ target } onClick={ onAlert } onMouseOver={ onAlert } className={ loss < 10 ? 'text-success' : loss < 30 ? 'text-warning' : 'text-danger' }>
                 <div className="fw-bold">
                     <span className="px-2">Loss: { lossPercentage }%</span>
                     { loss < 10 ? <FaCheckCircle /> : <>
@@ -62,6 +77,7 @@ export function SampleCSSFilter({ filter, filterComplete, loss, lossPercentage, 
                     </>}
                 </div>
             </div>
+
             { result.hex }<br />
             rgb({ result.rgb.r },{ result.rgb.g },{ result.rgb.b })<br />
             hsl({ result.hsl.h }deg,{ result.hsl.s }%,{ result.hsl.l }%)

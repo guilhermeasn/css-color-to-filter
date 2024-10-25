@@ -26,7 +26,7 @@ export default function ButtonCopy({ text, size = 'sm', variant = 'dark' } : But
         </Button>
 
         <Overlay target={ target.current } show={ alert } placement="bottom">
-            { props => <Tooltip { ...props }>Copied to Clipboard</Tooltip> }
+            { props => <Tooltip className="tooltip-success" { ...props } >Copied to Clipboard</Tooltip> }
         </Overlay>
 
     </>;
