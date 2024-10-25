@@ -5,27 +5,14 @@ import FormColor from "@/components/FormColor";
 import Header from "@/components/Header";
 import { SampleAddOpacity, SampleCSSFilter, SampleOriginal } from "@/components/Sample";
 import { Color, ColorHex, colorToFilter, ColorToFilter } from "@/core";
-import { applyMask, getPresetMask } from "mask-hooks";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
 export default function Home() {
 
-    let colorParam : ColorHex | null = useSearchParams().get('color');
-
-    const initialColor : ColorHex = useMemo(() => {
-        if(colorParam) {
-            colorParam = applyMask(colorParam, getPresetMask('COLOR_HEX'));
-            colorParam = Color.hexExpand(colorParam ?? '');
-            if(Color.hexPattern.test(colorParam)) return colorParam;
-        }
-        return Color.rgbToHex(Color.rgbRandom());
-    }, [ colorParam ]);
-
     const [ preserve, setPreserve ] = useState<boolean>(false);
     const [ opacity, setOpacity ] = useState<number>(50);
-    const [ color, setColor ] = useState<ColorHex>(initialColor);
+    const [ color, setColor ] = useState<ColorHex>(Color.rgbToHex(Color.rgbRandom()));
     const [ ctf, setCtf ] = useState<ColorToFilter>();
 
     useEffect(() => setCtf(colorToFilter(color)), [ color ]);
