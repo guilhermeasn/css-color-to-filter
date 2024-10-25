@@ -13,16 +13,24 @@ export default function Home() {
 
     const [ preserve, setPreserve ] = useState<boolean>(false);
     const [ opacity, setOpacity ] = useState<number>(50);
-    const [ color, setColor ] = useState<ColorHex>(Color.rgbToHex(Color.rgbRandom()));
+    const [ color, setColor ] = useState<ColorHex>();
     const [ ctf, setCtf ] = useState<ColorToFilter>();
 
-    useEffect(() => setCtf(colorToFilter(color)), [ color ]);
+    useEffect(() => {
+        if(!color) return;
+        setCtf(colorToFilter(color));
+    }, [ color ]);
 
     useEffect(() => {
-        if(!window || !window?.location?.pathname) return;
-        let c : ColorHex = applyMask(window.location.pathname, getPresetMask('COLOR_HEX'));
-        c = Color.hexExpand(c);
-        if(Color.hexPattern.test(c)) setColor(c);
+        if(window && window?.location?.pathname) {
+            let c : ColorHex = applyMask(window.location.pathname, getPresetMask('COLOR_HEX'));
+            c = Color.hexExpand(c);
+            if(Color.hexPattern.test(c)) {
+                setColor(c);
+                return;
+            }
+        }
+        setColor(Color.rgbToHex(Color.rgbRandom()));
     }, []);
 
     return <>
@@ -31,7 +39,7 @@ export default function Home() {
 
         <main>
 
-            <FormColor color={ color } onPickColor={ setColor } onRetry={ () => { setCtf(colorToFilter(color)) } } />
+            <FormColor color={ color } onPickColor={ setColor } onRetry={ () => { color && setCtf(colorToFilter(color)) } } />
 
             <Container as='section' className="my-5">
 
@@ -49,7 +57,7 @@ export default function Home() {
                                 filterComplete={ ctf.filter(true) }
                                 loss={ ctf.loss }
                                 result={ ctf.result }
-                                onRetry={ () => { setCtf(colorToFilter(color)) } }
+                                onRetry={ () => { color && setCtf(colorToFilter(color)) } }
                             />
                         </Col>
 
