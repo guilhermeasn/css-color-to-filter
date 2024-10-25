@@ -4,15 +4,24 @@ import Footer from "@/components/Footer";
 import FormColor from "@/components/FormColor";
 import Header from "@/components/Header";
 import { SampleAddOpacity, SampleCSSFilter, SampleOriginal } from "@/components/Sample";
-import { ColorHex, colorToFilter, ColorToFilter } from "@/core";
-import { useEffect, useState } from "react";
+import { Color, ColorHex, colorToFilter, ColorToFilter } from "@/core";
+import { useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-export default function Home() {
+export type HomeProps = {
+    colorParam ?: ColorHex
+}
+
+export default function Home({ colorParam } : HomeProps) {
+
+    const initialColor : ColorHex = useMemo(() => {
+        colorParam = Color.hexExpand(colorParam ?? '');
+        return Color.hexPattern.test(colorParam) ? colorParam : Color.rgbToHex(Color.rgbRandom());
+    }, [ colorParam ]);
 
     const [ preserve, setPreserve ] = useState<boolean>(false);
     const [ opacity, setOpacity ] = useState<number>(50);
-    const [ color, setColor ] = useState<ColorHex>('#255798');
+    const [ color, setColor ] = useState<ColorHex>(initialColor);
     const [ ctf, setCtf ] = useState<ColorToFilter>();
 
     useEffect(() => setCtf(colorToFilter(color)), [ color ]);

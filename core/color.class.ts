@@ -62,6 +62,10 @@ export default class Color {
         return keysMap(hsl, v => Math.round(v * 100));
     }
 
+    static rgbRandom() : ColorRgb {
+        return keysMap({ r: NaN, g: NaN, b: NaN }, () => Math.floor(Math.random() * 256));
+    }
+
     private readonly _input : Readonly<ColorRgb>;
     private _output : ColorRgb
 
