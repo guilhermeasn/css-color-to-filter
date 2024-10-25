@@ -45,16 +45,17 @@ export type SampleCSSFilterProps = {
     filter: string;
     filterComplete: string;
     loss: number;
+    lossPercentage: number;
     result: ColorData;
     onRetry: () => void;
 }
 
-export function SampleCSSFilter({ filter, filterComplete, loss, result, onRetry } : SampleCSSFilterProps) {
+export function SampleCSSFilter({ filter, filterComplete, loss, lossPercentage, result, onRetry } : SampleCSSFilterProps) {
     return (
         <Sample title="CSS Filter" sample={{ filter }}>
             <div className={ loss < 10 ? 'text-success' : loss < 30 ? 'text-warning' : 'text-danger' }>
                 <div className="fw-bold">
-                    <span className="px-2">Loss: { loss }</span>
+                    <span className="px-2">Loss: { lossPercentage }%</span>
                     { loss < 10 ? <FaCheckCircle /> : <>
                         <FaExclamationTriangle />
                         <Button onClick={ onRetry } title="recalculate" variant="link" className="p-0 my-0 ms-2">Retry</Button>

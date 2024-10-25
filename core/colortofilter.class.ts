@@ -63,6 +63,10 @@ export default class ColorToFilter {
         return this._info.loss;
     }
 
+    get lossPercentage() : number {
+        return parseFloat((this._info.loss * 100 / 1325).toFixed(2));
+    }
+
     get values() : CtfValues {
         return this._info.values;
     }
@@ -111,6 +115,8 @@ export default class ColorToFilter {
             const result = this._spsa(initialValues, rateValues, 5, 15, 1000);
             if (result.loss < best.loss) best = result;
         }
+
+        if(best.loss === 0) return best;
 
         const adjust : number = best.loss + 1;
 
@@ -166,10 +172,13 @@ export default class ColorToFilter {
             }
 
             const loss = this._loss(values);
+
             if(loss < best.loss) best = { loss, values: { ...values } };
+            if(loss === 0) break;
 
         }
 
+        this._loss(best.values);
         return best;
 
     }
@@ -189,7 +198,7 @@ export default class ColorToFilter {
     
         const result = this._result.output;
         const target = this._target.output;
-    
+
         return (
             reduce(result.rgb, (t, _, k) => t + Math.abs(result.rgb[k] - target.rgb[k]), 0) +
             reduce(result.hsl, (t, _, k) => t + Math.abs(result.hsl[k] - target.hsl[k]), 0)

@@ -56,6 +56,7 @@ export default function Home() {
                                 filter={ ctf.filter() }
                                 filterComplete={ ctf.filter(true) }
                                 loss={ ctf.loss }
+                                lossPercentage={ ctf.lossPercentage }
                                 result={ ctf.result }
                                 onRetry={ () => { color && setCtf(colorToFilter(color)) } }
                             />
