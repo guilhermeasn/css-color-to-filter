@@ -5,6 +5,7 @@ import FormColor from "@/components/FormColor";
 import Header from "@/components/Header";
 import { SampleAddOpacity, SampleCSSFilter, SampleOriginal } from "@/components/Sample";
 import { Color, ColorHex, colorToFilter, ColorToFilter } from "@/core";
+import { applyMask, getPresetMask } from "mask-hooks";
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
@@ -16,6 +17,13 @@ export default function Home() {
     const [ ctf, setCtf ] = useState<ColorToFilter>();
 
     useEffect(() => setCtf(colorToFilter(color)), [ color ]);
+
+    useEffect(() => {
+        if(!window || !window?.location?.pathname) return;
+        let c : ColorHex = applyMask(window.location.pathname, getPresetMask('COLOR_HEX'));
+        c = Color.hexExpand(c);
+        if(Color.hexPattern.test(c)) setColor(c);
+    }, []);
 
     return <>
     
