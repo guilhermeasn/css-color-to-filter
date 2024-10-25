@@ -50,6 +50,7 @@ export default function Home({ colorParam } : HomeProps) {
                                 filterComplete={ ctf.filter(true) }
                                 loss={ ctf.loss }
                                 result={ ctf.result }
+                                onRetry={ () => { setCtf(colorToFilter(color)) } }
                             />
                         </Col>
 

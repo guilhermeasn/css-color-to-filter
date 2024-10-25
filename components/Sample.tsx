@@ -1,6 +1,6 @@
 import { ColorData } from "@/core";
 import { CSSProperties, ReactNode } from "react";
-import { Card, FormCheck } from "react-bootstrap";
+import { Button, Card, FormCheck } from "react-bootstrap";
 import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import ButtonCopy from "./ButtonCopy";
 
@@ -46,15 +46,19 @@ export type SampleCSSFilterProps = {
     filterComplete: string;
     loss: number;
     result: ColorData;
+    onRetry: () => void;
 }
 
-export function SampleCSSFilter({ filter, filterComplete, loss, result } : SampleCSSFilterProps) {
+export function SampleCSSFilter({ filter, filterComplete, loss, result, onRetry } : SampleCSSFilterProps) {
     return (
         <Sample title="CSS Filter" sample={{ filter }}>
             <div className={ loss < 10 ? 'text-success' : loss < 30 ? 'text-warning' : 'text-danger' }>
                 <div className="fw-bold">
                     <span className="px-2">Loss: { loss }</span>
-                    { loss < 10 ? <FaCheckCircle /> : <FaExclamationTriangle /> }
+                    { loss < 10 ? <FaCheckCircle /> : <>
+                        <FaExclamationTriangle />
+                        <Button onClick={ onRetry } title="recalculate" variant="link" className="p-0 my-0 ms-2">Retry</Button>
+                    </>}
                 </div>
             </div>
             { result.hex }<br />

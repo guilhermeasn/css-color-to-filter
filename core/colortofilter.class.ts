@@ -104,7 +104,7 @@ export default class ColorToFilter {
 
         const rateValues : CtfValues = {
             invert: 60, sepia: 180, saturate: 18000,
-            hueRotate: 360, brightness: 1.2, contrast: 1.2
+            hueRotate: 720, brightness: 1.2, contrast: 1.2
         }
 
         for (let i = 0; best.loss > 20 && i < 10; i++) {

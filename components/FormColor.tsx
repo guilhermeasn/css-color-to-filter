@@ -35,7 +35,7 @@ export default function FormColor({ color, onPickColor, onRetry } : FormColorPro
                         <Form.Control className={ maskColor.completed ? undefined : 'is-invalid bg-danger-subtle text-danger' } type="text" value={ maskColor.result.replace('#', '') } onChange={ input => setMaskColor(mask(input.currentTarget.value)) } />
                     </InputGroup>
                     <Form.Control className="mx-2" type="color" value={ color } onChange={ input => setPickColor(input.currentTarget.value) } />
-                    <Button onClick={ onRetry }><FaSync /></Button>
+                    <Button onClick={ onRetry } title="recalculate"><FaSync /></Button>
                 </div>
             </Container>
         </section>
