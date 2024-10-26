@@ -39,7 +39,7 @@ export default function Home() {
 
         <main>
 
-            <FormColor color={ color } onPickColor={ setColor } onRetry={ () => { color && setCtf(colorToFilter(color)) } } />
+            <FormColor color={ color } onPickColor={ setColor } onRetry={ () => { color && setCtf(colorToFilter(color)) } } retryDisabled={ ctf && ctf.loss === 0 } />
 
             <Container as='section' className="my-5">
 

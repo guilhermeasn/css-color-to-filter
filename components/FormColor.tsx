@@ -7,11 +7,12 @@ import ButtonCopy from "./ButtonCopy";
 
 export type FormColorProps = {
     color ?: ColorHex;
+    retryDisabled ?: boolean;
     onPickColor : (color : ColorHex) => void;
     onRetry : () => void;
 }
 
-export default function FormColor({ color, onPickColor, onRetry } : FormColorProps) {
+export default function FormColor({ color, retryDisabled = false, onPickColor, onRetry } : FormColorProps) {
 
     const mask = useCompleteMask(getPresetMask('COLOR_HEX'));
 
@@ -55,7 +56,7 @@ export default function FormColor({ color, onPickColor, onRetry } : FormColorPro
                             />
                         </InputGroup>
                         <Form.Control className="mx-2" type="color" value={ color } onChange={ input => setPickColor(input.currentTarget.value) } />
-                        <Button variant="warning" className="me-2" onClick={ onRetry } title="recalculate"><FaSync /></Button>
+                        <Button variant={ retryDisabled ? 'seconday' : 'warning' } className="me-2" onClick={ onRetry } title="recalculate" disabled={ retryDisabled }><FaSync /></Button>
                         { typeof navigator === 'undefined' ? <ButtonCopy text={ color } /> : <Button onClick={ onShare } title="share"><FaShareAlt /></Button> }
                     </div>
 
