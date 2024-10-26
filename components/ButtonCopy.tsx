@@ -22,7 +22,7 @@ export default function ButtonCopy({ text, size = 'sm', variant = 'dark' } : But
     return <>
 
         <Button ref={ target } variant={ variant } size={ size } title="Copy!" onClick={ onCopy }>
-            <FaCopy />
+            <FaCopy className="mx-1" />
         </Button>
 
         <Overlay target={ target.current } show={ alert } placement="bottom">

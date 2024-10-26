@@ -178,13 +178,13 @@ export default class ColorToFilter {
 
         }
 
-        this._loss(best.values);
+        this._load(best.values);
         return best;
 
     }
 
-    private _loss(values : CtfValues) : number {
-        
+    private _load(values : CtfValues) : void {
+
         this._result.reset();
 
         this._result.batch([
@@ -195,7 +195,13 @@ export default class ColorToFilter {
             [ 'brightness', values.brightness, true ],
             [ 'contrast', values.contrast, true ],
         ]);
+
+    }
+
+    private _loss(values : CtfValues) : number {
     
+        this._load(values);
+
         const result = this._result.output;
         const target = this._target.output;
 

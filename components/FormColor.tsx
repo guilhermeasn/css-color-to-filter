@@ -2,7 +2,8 @@ import { Color, ColorHex } from "@/core";
 import { CompleteMask, getPresetMask, useCompleteMask } from "mask-hooks";
 import { useEffect, useState } from "react";
 import { Button, Container, Form, InputGroup } from "react-bootstrap";
-import { FaSync } from "react-icons/fa";
+import { FaShareAlt, FaSync } from "react-icons/fa";
+import ButtonCopy from "./ButtonCopy";
 
 export type FormColorProps = {
     color ?: ColorHex;
@@ -17,9 +18,18 @@ export default function FormColor({ color, onPickColor, onRetry } : FormColorPro
     const [ timeoutNum, setTimeoutNum ] = useState<NodeJS.Timeout>();
     const [ maskColor, setMaskColor ] = useState<CompleteMask>(mask(color ?? ''));
 
-    const setPickColor = (value : string) => {
+    const setPickColor = (value : string) : void => {
         clearTimeout(timeoutNum);
         setTimeoutNum(setTimeout(() => onPickColor(value), 200));
+    }
+
+    const onShare = () : void => {
+        if(typeof navigator === 'undefined' || !color) return;
+        navigator.share({
+            url: window.location.origin + '/' + color.replace('#', ''),
+            text: 'Color translate to CSS Filters',
+            title: 'CSS Color to Filter'
+        });
     }
 
     useEffect(() => color && Color.hexExpand(maskColor.result) !== color ? setMaskColor(mask(color)) : undefined, [ color ]);
@@ -45,7 +55,8 @@ export default function FormColor({ color, onPickColor, onRetry } : FormColorPro
                             />
                         </InputGroup>
                         <Form.Control className="mx-2" type="color" value={ color } onChange={ input => setPickColor(input.currentTarget.value) } />
-                        <Button onClick={ onRetry } title="recalculate"><FaSync /></Button>
+                        <Button variant="warning" className="me-2" onClick={ onRetry } title="recalculate"><FaSync /></Button>
+                        { typeof navigator === 'undefined' ? <ButtonCopy text={ color } /> : <Button onClick={ onShare } title="share"><FaShareAlt /></Button> }
                     </div>
 
                 </Container>
