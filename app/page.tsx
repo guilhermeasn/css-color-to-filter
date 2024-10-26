@@ -17,7 +17,7 @@ export default function Home() {
     const [ ctf, setCtf ] = useState<ColorToFilter>();
 
     useEffect(() => {
-        if(!color) return;
+        if(!color || (ctf && ctf.target.hex === color.toUpperCase())) return;
         setCtf(colorToFilter(color));
     }, [ color ]);
 
